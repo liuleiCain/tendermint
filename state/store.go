@@ -2,6 +2,7 @@ package state
 
 import (
 	"fmt"
+	"time"
 
 	dbm "github.com/tendermint/tm-db"
 
@@ -402,12 +403,24 @@ func LoadConsensusParams(db dbm.DB, height int64) (types.ConsensusParams, error)
 }
 
 func loadConsensusParamsInfo(db dbm.DB, height int64) *ConsensusParamsInfo {
-	buf, err := db.Get(calcConsensusParamsKey(height))
-	if err != nil {
-		panic(err)
-	}
-	if len(buf) == 0 {
-		return nil
+	var i int = 0
+	var buf []byte
+	var err error
+	for {
+		buf, err := db.Get(calcConsensusParamsKey(height))
+		if err != nil {
+			panic(err)
+		}
+		//if i < 5 ,sleep 0.5 seconds find data
+		if len(buf) == 0 && i < 5 {
+			i++
+			time.Sleep(time.Millisecond * 500)
+		}
+		//if i >= 5 , return error
+		if len(buf) == 0 && i >= 5 {
+			return nil
+		}
+		break
 	}
 
 	paramsInfo := new(ConsensusParamsInfo)
