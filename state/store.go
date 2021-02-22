@@ -411,16 +411,16 @@ func loadConsensusParamsInfo(db dbm.DB, height int64) *ConsensusParamsInfo {
 		if err != nil {
 			panic(err)
 		}
-		//if i < 5 ,sleep 0.5 seconds find data
 		if len(buf) == 0 && i < 5 {
 			i++
 			time.Sleep(time.Millisecond * 500)
 		}
-		//if i >= 5 , return error
 		if len(buf) == 0 && i >= 5 {
 			return nil
 		}
-		break
+		if len(buf) > 0 {
+			break
+		}
 	}
 
 	paramsInfo := new(ConsensusParamsInfo)
