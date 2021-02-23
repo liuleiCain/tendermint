@@ -411,7 +411,7 @@ func updateState(
 
 	// Update the params with the latest abciResponses.
 	nextParams := state.ConsensusParams
-	lastHeightParamsChanged := state.LastBlockHeight
+	lastHeightParamsChanged := state.LastHeightConsensusParamsChanged
 	if abciResponses.EndBlock.ConsensusParamUpdates != nil {
 		// NOTE: must not mutate s.ConsensusParams
 		nextParams = state.ConsensusParams.Update(abciResponses.EndBlock.ConsensusParamUpdates)
